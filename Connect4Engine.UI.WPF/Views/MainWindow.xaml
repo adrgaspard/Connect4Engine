@@ -1,0 +1,27 @@
+﻿<controls:MetroWindow x:Class="Connect4Engine.UI.WPF.Views.MainWindow"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns:local="clr-namespace:Connect4Engine.UI.WPF.Views"
+                      mc:Ignorable="d"
+                      Title="{Binding Path=AppName}" MinHeight="750" MinWidth="920"
+                      DataContext="{Binding Path=MainVM, Source={StaticResource ResourceKey=Locator}}"
+                      GlowBrush="{Binding Path=AppColor, Converter={StaticResource ResourceKey=colorToBrushConverter}}"
+                      WindowTitleBrush="{Binding Path=AppColor, Converter={StaticResource ResourceKey=colorToBrushConverter}}"
+                      Style="{StaticResource ResourceKey=customWindowStyle}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <local:BoardView DataContext="{Binding Source={StaticResource ResourceKey=Locator}, Path=BoardVM}" />
+        <StackPanel Grid.Column="1" DataContext="{Binding Source={StaticResource ResourceKey=Locator}, Path=SolverVM}" Orientation="Vertical" Margin="10">
+            <controls:ToggleSwitch OnContent="Weak" OffContent="Strong" IsOn="{Binding Path=Weak}" />
+            <Button Content="Start search" Command="{Binding Path=StartSolvingCommand}" />
+            <Button Content="Reset" Command="{Binding Path=StopSolvingCommand}" />
+            <TextBlock Text="{Binding Path=Scores}" FontSize="35" Foreground="White" />
+        </StackPanel>
+    </Grid>
+</controls:MetroWindow>

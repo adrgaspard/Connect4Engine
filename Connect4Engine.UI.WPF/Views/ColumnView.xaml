@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="Connect4Engine.UI.WPF.Views.ColumnView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             xmlns:local="clr-namespace:Connect4Engine.UI.WPF.Views"
+             mc:Ignorable="d">
+    <Button Command="{Binding Path=RequestPlayCommand}" Style="{StaticResource ResourceKey=columnButtonStyle}" Padding="4,4,4,4">
+        <ItemsControl ItemsSource="{Binding}">
+            <ItemsControl.DataContext>
+                <CollectionViewSource Source="{Binding Path=SquareViewModels}">
+                    <CollectionViewSource.SortDescriptions>
+                        <scm:SortDescription PropertyName="Row" Direction="Descending" />
+                    </CollectionViewSource.SortDescriptions>
+                </CollectionViewSource>
+            </ItemsControl.DataContext>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Vertical" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <local:SquareView DataContext="{Binding}" Margin="4,4,4,4" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Button>
+</UserControl>
