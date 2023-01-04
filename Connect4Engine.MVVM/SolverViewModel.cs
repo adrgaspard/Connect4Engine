@@ -38,6 +38,20 @@ namespace Connect4Engine.MVVM
             }
         }
 
+        private uint exploredNodes;
+        public uint ExploredNodes
+        {
+            get => exploredNodes;
+            private set
+            {
+                if (exploredNodes != value)
+                {
+                    exploredNodes = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         private bool weak;
         public bool Weak
         {
@@ -78,6 +92,8 @@ namespace Connect4Engine.MVVM
                 Solver solver = new(game.ConnectNeeded, game.Width, game.Height);
                 var results = solver.Analyze(game.Engine, Weak);
                 Scores = string.Join(", ", results.Select(result => result == Solver.InvalidMoveScore ? "--" : result.ToString()));
+                ExploredNodes = solver.ExploredNodesCount;
+                solver.Reset();
             });
         }
 
@@ -91,6 +107,7 @@ namespace Connect4Engine.MVVM
                 }
             }
             Scores = NoScoreFound;
+            ExploredNodes = 0;
         }
     }
 }

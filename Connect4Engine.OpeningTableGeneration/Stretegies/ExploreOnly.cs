@@ -53,12 +53,13 @@ namespace Connect4Engine.OpeningTableGeneration.Stretegies
             if (explore.Status != TaskStatus.RanToCompletion)
             {
                 Console.Error.WriteLine("An error occured when exploring positions!");
+                Console.Error.WriteLine(explore.Exception?.ToString() ?? "No exception found!");
                 return;
             }
             Console.WriteLine($"[{DateTime.Now - exploreStart:hh\\:mm\\:ss}] Exploration finished, now it's time to write the results!");
             Console.WriteLine("----------------------------------------");
             Console.WriteLine("Starting writing results...");
-            using (var stream = new StreamWriter($"{Global.ConnectedNeeded}-{Global.Width}-{Global.Height}-{Global.Depth}_{startingPosition}_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}.{Consts.ExploreFileExtension}"))
+            using (var stream = new StreamWriter($"{Global.ConnectedNeeded}-{Global.Width}-{Global.Height}-{Global.Depth}_{startingPosition}_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}.{Consts.ExploreFilesExtension}"))
             {
                 stream.Write(new ExplorationResultSerializer().Serialize(positions));
             }

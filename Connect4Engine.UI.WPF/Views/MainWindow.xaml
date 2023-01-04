@@ -22,6 +22,7 @@
             <Button Content="Start search" Command="{Binding Path=StartSolvingCommand}" />
             <Button Content="Reset" Command="{Binding Path=StopSolvingCommand}" />
             <TextBlock Text="{Binding Path=Scores}" FontSize="35" Foreground="White" />
+            <TextBlock Text="{Binding Path=ExploredNodes}" FontSize="30" Foreground="White" />
         </StackPanel>
     </Grid>
 </controls:MetroWindow>

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Connect4Engine.Core.Knowledge
+namespace Connect4Engine.Core.Serialization.Database
 {
     public sealed class KnowledgeEntry : IEquatable<KnowledgeEntry>
     {
@@ -18,7 +18,7 @@ namespace Connect4Engine.Core.Knowledge
         [NotMapped]
         public UInt128 PositionKey
         {
-            get => (PartialPositionKey1 << 64) | PartialPositionKey2;
+            get => PartialPositionKey1 << 64 | PartialPositionKey2;
             set
             {
                 PartialPositionKey1 = (ulong)(value >> 64);

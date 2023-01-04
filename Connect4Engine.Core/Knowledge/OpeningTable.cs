@@ -1,4 +1,5 @@
 ﻿using Connect4Engine.Core.Abstractions;
+using Connect4Engine.Core.Serialization.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,21 +8,21 @@ using System.Threading.Tasks;
 
 namespace Connect4Engine.Core.Knowledge
 {
-    public sealed class OpeningTable : IReadOnlyTable<UInt128, byte>
+    public sealed class OpeningTable : IReadOnlyTable<UInt128, sbyte>
     {
-        private readonly Dictionary<string, string> Files;
+        private KnowledgeDbContext Context;
 
-        public TableResult<byte> this[UInt128 key] => throw new NotImplementedException();
+        public TableResult<sbyte> this[UInt128 key] => Context.KnowledgeEntries.FirstOrDefault(entry => entry.PositionKey == key) is KnowledgeEntry found ? found.Score : TableResult<sbyte>.NotFound;
 
         public OpeningTable()
         {
-            Files = new();
-            Reset();
+            Context = new();
         }
 
         public void Reset()
         {
-            throw new NotSupportedException();
+            Context?.Dispose();
+            Context = new();
         }
     }
 }

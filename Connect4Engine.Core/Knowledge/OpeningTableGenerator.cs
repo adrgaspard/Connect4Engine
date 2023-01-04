@@ -40,14 +40,14 @@ namespace Connect4Engine.Core.Knowledge
             }
         }
 
-        public GenerationResult Generate(ExplorationResult data, int connectNeeded, int width, int height, int nbThreads = 8)
+        public GenerationResult Generate(ExplorationResult data, int connectNeeded, int width, int height, int nbThreads = 16)
         {
             if (nbThreads < 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(nbThreads), "The number of threads must be a positive number.");
             }
             CurrentStep = GeneratorStep.Initialization;
-            var results = new Dictionary<UInt128, EvaluationInfo>(data.Count * 2);
+            var results = new Dictionary<PositionMultiIdentifier, EvaluationInfo>(data.Count * 2);
             var chunks = data.Chunk((int)Math.Ceiling(data.Count / (float)nbThreads)).ToImmutableList();
             var tasks = new Task[nbThreads];
             for (int i = 0; i < nbThreads; i++)
@@ -69,10 +69,7 @@ namespace Connect4Engine.Core.Knowledge
                         lock (ResultMutex)
                         {
                             SolvedPositions++;
-                            foreach (var key in pair.Value)
-                            {
-                                results.Add(key, new(solver.ExploredNodesCount, score));
-                            }
+                            results.Add(pair.Key, new(pair.Value, solver.ExploredNodesCount, score));
                         }
                         solver.Reset();
                     }

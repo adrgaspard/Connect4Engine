@@ -1,4 +1,4 @@
-﻿using Connect4Engine.Core.Knowledge;
+﻿  using Connect4Engine.Core.Knowledge;
 using Connect4Engine.Core.Serialization;
 using Connect4Engine.Core.Utils;
 using System;
