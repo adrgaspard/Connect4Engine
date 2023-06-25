@@ -4,6 +4,8 @@
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns:iconpacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                      xmlns:analyzerconverter="clr-namespace:Connect4Engine.UI.WPF.Converters.Analyzer"
                       xmlns:local="clr-namespace:Connect4Engine.UI.WPF.Views"
                       mc:Ignorable="d"
                       Title="{Binding Path=AppName}" MinHeight="750" MinWidth="920"
@@ -11,6 +13,10 @@
                       GlowBrush="{Binding Path=AppColor, Converter={StaticResource ResourceKey=colorToBrushConverter}}"
                       WindowTitleBrush="{Binding Path=AppColor, Converter={StaticResource ResourceKey=colorToBrushConverter}}"
                       Style="{StaticResource ResourceKey=customWindowStyle}">
+    <controls:MetroWindow.Resources>
+        <analyzerconverter:MoveClassificationToBrushConverter x:Key="moveClassificationToBrush" />
+        <analyzerconverter:MoveClassificationToFAKindConverter x:Key="moveClassificationToFAKind" />
+    </controls:MetroWindow.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -21,6 +27,19 @@
             <controls:ToggleSwitch OnContent="Weak" OffContent="Strong" IsOn="{Binding Path=Weak}" />
             <Button Content="Start search" Command="{Binding Path=StartSolvingCommand}" />
             <Button Content="Reset" Command="{Binding Path=StopSolvingCommand}" />
+            <ItemsControl ItemsSource="{Binding Path=MoveClassifications}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Rectangle Fill="{Binding Converter={StaticResource ResourceKey=moveClassificationToBrush}}" Width="36" Height="8" Margin="2">
+                        </Rectangle>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
             <TextBlock Text="{Binding Path=Scores}" FontSize="35" Foreground="White" />
             <TextBlock Text="{Binding Path=ExploredNodes}" FontSize="30" Foreground="White" />
         </StackPanel>

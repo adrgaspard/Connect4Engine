@@ -56,7 +56,7 @@ namespace Connect4Engine.Core.Knowledge
                 tasks[i] = Task.Run(() =>
                 {
                     var chunk = chunks[i];
-                    Solver solver = new(connectNeeded, width, height);
+                    Solver solver = new(connectNeeded, width, height, new(ImmutableSortedDictionary.Create<UInt128, sbyte>()));
                     ready = true;
                     foreach (var pair in chunk)
                     {

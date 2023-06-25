@@ -17,6 +17,16 @@ using System.Text;
 //Console.WriteLine("----------------------------------------");
 //SolveOnly.Execute(positions);
 
+//GenerationResult results;
+//Console.WriteLine("Reading results...");
+//using (var stream = new StreamReader($"4-7-6-10__2023-01-04-00-11-09.{Consts.DataFilesExtension}"))
+//{
+//    results = new GenerationResultSerializer().Deserialize(stream.ReadToEnd());
+//}
+//Console.WriteLine($"{results.Count} results readed successfully!");
+//Console.WriteLine("----------------------------------------");
+//AnalyzeOnly.Execute(results);
+
 GenerationResult results;
 Console.WriteLine("Reading results...");
 using (var stream = new StreamReader($"4-7-6-10__2023-01-04-00-11-09.{Consts.DataFilesExtension}"))
@@ -25,4 +35,4 @@ using (var stream = new StreamReader($"4-7-6-10__2023-01-04-00-11-09.{Consts.Dat
 }
 Console.WriteLine($"{results.Count} results readed successfully!");
 Console.WriteLine("----------------------------------------");
-AnalyzeOnly.Execute(results);
+LintOnly.Execute(results);

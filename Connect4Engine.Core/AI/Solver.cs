@@ -1,5 +1,6 @@
 ﻿using Connect4Engine.Core.Abstractions;
 using Connect4Engine.Core.AI;
+using Connect4Engine.Core.Knowledge;
 using Connect4Engine.Core.Match;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,6 @@ namespace Connect4Engine.Core.AI
 {
     public sealed class Solver
     {
-        public const int InvalidMoveScore = -1000000000;
-
         public readonly int ConnectNeeded;
         public readonly int Width;
         public readonly int Height;
@@ -22,10 +21,11 @@ namespace Connect4Engine.Core.AI
         private readonly TranspositionTable Table;
         private readonly byte[] ColumnOrder;
         private readonly object Mutex;
+        private readonly OpeningTable OpeningTable;
 
         public uint ExploredNodesCount { get; private set; }
 
-        public Solver(int connectNeeded, int width, int height, int transpositionTableLogSize = 25)
+        public Solver(int connectNeeded, int width, int height, OpeningTable openingTable, int transpositionTableLogSize = 25)
         {
             if (width < 1 || height < 1)
             {
@@ -43,6 +43,7 @@ namespace Connect4Engine.Core.AI
                 ColumnOrder[i] = (byte)(width / 2 + (1 - 2 * (i % 2)) * (i + 1) / 2);
             }
             Mutex = new();
+            OpeningTable = openingTable;
         }
 
         public void Reset()
@@ -51,9 +52,9 @@ namespace Connect4Engine.Core.AI
             Table.Reset();
         }
 
-        public ICollection<int> Analyze(GameEngine game, bool weak)
+        public MovementDescriptor[] Analyze(GameEngine game, bool weak)
         {
-            int[] scores = new int[Width];
+            MovementDescriptor[] scores = new MovementDescriptor[Width];
             Task[] tasks = new Task[Width];
             uint tasksLaunched = 0;
             for (byte columnIndex = 0; columnIndex < Width; columnIndex++)
@@ -71,23 +72,23 @@ namespace Connect4Engine.Core.AI
                     {
                         if (clone.IsWinningMove(index))
                         {
-                            scores[index] = (clone.RemainingMoves + 1) / 2;
+                            scores[index] = new(true, (sbyte)((clone.RemainingMoves + 1) / 2));
                         }
                         else
                         {
                             clone.Play(index);
-                            scores[index] = -Solve(clone, weak);
+                            scores[index] = new(true, (sbyte)-Solve(clone, weak));
                         }
                     }
                     else
                     {
-                        scores[index] = InvalidMoveScore;
+                        scores[index] = new (false, 0);
                     }
                 });
-                while (tasksLaunched <= columnIndex) ;
+                while (tasksLaunched <= columnIndex);
             }
             Task.WaitAll(tasks);
-            return scores.ToList();
+            return scores;
         }
 
         public int Solve(GameEngine game, bool weak)
@@ -191,8 +192,11 @@ namespace Connect4Engine.Core.AI
                     }
                 }
             }
-            // TODO : Regarder pour une solution dans l'opening book.
-            //if (int val = book.get(P)) return val + Position::MIN_SCORE - 1;
+            var openingResult = OpeningTable[key];
+            if (openingResult.Found)
+            {
+                return openingResult;
+            }
             MoveSorter moveSorter = new(Width);
             for (int i = Width - 1; i >= 0; i--)
             {

@@ -10,7 +10,7 @@ namespace Connect4Engine.Core.Match
     public class Game
     {
         public readonly GameEngine Engine;
-        private readonly Stack<byte> PlaysHistory;
+        protected readonly Stack<byte> PlaysHistory;
         private readonly Stack<byte> UndosHistory;
         private bool LastUndoWasWinning;
         private bool LastUndoWasDraw;
@@ -78,7 +78,7 @@ namespace Connect4Engine.Core.Match
             return UndosHistory.Count > 0;
         }
 
-        public void Play(byte columnIndex)
+        public virtual void Play(byte columnIndex)
         {
             if (Engine.IsWinningMove(columnIndex))
             {
@@ -102,7 +102,7 @@ namespace Connect4Engine.Core.Match
             }
         }
 
-        public void Undo()
+        public virtual void Undo()
         {
             if (IsFinished)
             {
@@ -118,7 +118,7 @@ namespace Connect4Engine.Core.Match
             UndosHistory.Push(columnIndex);
         }
 
-        public void Redo()
+        public virtual void Redo()
         {
             byte columnIndex = UndosHistory.Pop();
             if (UndosHistory.Count == 0 && (LastUndoWasWinning || LastUndoWasDraw))

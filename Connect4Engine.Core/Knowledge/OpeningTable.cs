@@ -1,28 +1,39 @@
 ﻿using Connect4Engine.Core.Abstractions;
-using Connect4Engine.Core.Serialization.Database;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Connect4Engine.Core.Knowledge
 {
-    public sealed class OpeningTable : IReadOnlyTable<UInt128, sbyte>
+    public sealed class OpeningTable : IReadOnlyTable<UInt128, sbyte>, IReadOnlyCollection<KeyValuePair<UInt128, sbyte>>
     {
-        private KnowledgeDbContext Context;
+        private readonly ImmutableSortedDictionary<UInt128, sbyte> Data;
 
-        public TableResult<sbyte> this[UInt128 key] => Context.KnowledgeEntries.FirstOrDefault(entry => entry.PositionKey == key) is KnowledgeEntry found ? found.Score : TableResult<sbyte>.NotFound;
+        public int Count => Data.Count;
 
-        public OpeningTable()
+        public TableResult<sbyte> this[UInt128 key] => Data.TryGetValue(key, out sbyte value) ? value : TableResult<sbyte>.NotFound;
+
+        public OpeningTable(ImmutableSortedDictionary<UInt128, sbyte> data)
         {
-            Context = new();
+            Data = data;
         }
 
         public void Reset()
         {
-            Context?.Dispose();
-            Context = new();
+        }
+
+        public IEnumerator<KeyValuePair<UInt128, sbyte>> GetEnumerator()
+        {
+            return Data.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return Data.GetEnumerator();
         }
     }
 }
