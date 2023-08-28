@@ -1,4 +1,4 @@
-﻿using Connect4Engine.Core.Match;
+﻿using Connect4Engine.Core.Operation;
 
 namespace Connect4Engine.Core.AI
 {
@@ -6,8 +6,8 @@ namespace Connect4Engine.Core.AI
     {
         public MoveClassification Analyze(GameEngine game, IReadOnlyList<MovementDescriptor> movementScores, sbyte chosenMovementScore, sbyte playerPreviousScore)
         {
-            var orderedPossibleScores = movementScores.Where(descriptor => descriptor.Possible).Select(descriptor => descriptor.Score).OrderByDescending(score => score).ToArray();
-            var theoricMaxScore = game.RemainingMoves / 2 - 1;
+            sbyte[] orderedPossibleScores = movementScores.Where(descriptor => descriptor.Possible).Select(descriptor => descriptor.Score).OrderByDescending(score => score).ToArray();
+            int theoricMaxScore = (game.RemainingMoves / 2) - 1;
             if (orderedPossibleScores.Length <= 1)
             {
                 return MoveClassification.OnlyOne; // The only possible movement.
@@ -22,7 +22,7 @@ namespace Connect4Engine.Core.AI
                     }
                     return MoveClassification.Great; // The only good move !
                 }
-                    return MoveClassification.Best; // The best possible move !
+                return MoveClassification.Best; // The best possible move !
             }
             if (playerPreviousScore < chosenMovementScore)
             {

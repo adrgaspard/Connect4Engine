@@ -1,10 +1,4 @@
-﻿using Connect4Engine.Core.Utils;
-using Connect4Engine.MVVM;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Connect4Engine.MVVM;
 
 namespace Connect4Engine.UI.WPF.ViewModels
 {

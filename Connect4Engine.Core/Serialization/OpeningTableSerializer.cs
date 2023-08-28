@@ -1,11 +1,7 @@
 ﻿using Connect4Engine.Core.Abstractions;
 using Connect4Engine.Core.Knowledge;
-using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Connect4Engine.Core.Serialization
 {
@@ -14,10 +10,14 @@ namespace Connect4Engine.Core.Serialization
         public OpeningTable Deserialize(string input)
         {
             string[] entries = input.Split('\n');
-            var pairs = new List<KeyValuePair<UInt128, sbyte>>(entries.Length);
+            List<KeyValuePair<UInt128, sbyte>> pairs = new(entries.Length);
             foreach (string entry in entries)
             {
-                if (string.IsNullOrWhiteSpace(entry)) continue;
+                if (string.IsNullOrWhiteSpace(entry))
+                {
+                    continue;
+                }
+
                 string[] keyValue = entry.Split(':');
                 UInt128 key = UInt128.Parse(keyValue[0]);
                 sbyte value = sbyte.Parse(keyValue[1]);
@@ -28,13 +28,13 @@ namespace Connect4Engine.Core.Serialization
 
         public string Serialize(OpeningTable input)
         {
-            var builder = new StringBuilder();
-            foreach (var pair in input)
+            StringBuilder builder = new();
+            foreach (KeyValuePair<UInt128, sbyte> pair in input)
             {
-                builder.Append(pair.Key);
-                builder.Append(':');
-                builder.Append(pair.Value);
-                builder.Append('\n');
+                _ = builder.Append(pair.Key);
+                _ = builder.Append(':');
+                _ = builder.Append(pair.Value);
+                _ = builder.Append('\n');
             }
             return builder.ToString();
         }

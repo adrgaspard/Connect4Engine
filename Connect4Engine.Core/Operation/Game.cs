@@ -1,11 +1,4 @@
-﻿using Connect4Engine.Core.AI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Connect4Engine.Core.Match
+﻿namespace Connect4Engine.Core.Operation
 {
     public class Game
     {
@@ -34,21 +27,11 @@ namespace Connect4Engine.Core.Match
 
         public byte this[byte columnIndex] => ColumnHeight[columnIndex];
 
-        public Colour this[byte columnIndex, byte rowIndex]
-        {
-            get
-            {
-                if ((Engine.AllPawns & (UInt128.One << rowIndex + columnIndex * (Engine.Height + 1))) == 0)
-                {
-                    return Colour.None;
-                }
-                if ((Engine.CurrentPawns & (UInt128.One << rowIndex + columnIndex * (Engine.Height + 1))) == 0)
-                {
-                    return Current == Colour.Red ? Colour.Yellow : Colour.Red;
-                }
-                return Current;
-            }
-        }
+        public Colour this[byte columnIndex, byte rowIndex] => (Engine.AllPawns & (UInt128.One << (rowIndex + (columnIndex * (Engine.Height + 1))))) == 0
+                    ? Colour.None
+                    : (Engine.CurrentPawns & (UInt128.One << (rowIndex + (columnIndex * (Engine.Height + 1))))) == 0
+                    ? Current == Colour.Red ? Colour.Yellow : Colour.Red
+                    : Current;
 
         public Game(int connectNeeded, int width, int height)
         {

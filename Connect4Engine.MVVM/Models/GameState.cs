@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Connect4Engine.MVVM.Models
+﻿namespace Connect4Engine.MVVM.Models
 {
     [Flags]
     public enum GameState : ushort

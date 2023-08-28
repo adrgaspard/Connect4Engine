@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Connect4Engine.Core.AI
+﻿namespace Connect4Engine.Core.AI
 {
     public sealed class MoveSorter
     {
@@ -37,6 +31,6 @@ namespace Connect4Engine.Core.AI
             Size = 0;
         }
 
-        record struct MoveScore(UInt128 Move, uint Score);
+        private record struct MoveScore(UInt128 Move, uint Score);
     }
 }

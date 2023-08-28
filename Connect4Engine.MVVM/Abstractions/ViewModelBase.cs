@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace ChessEngine.MVVM.ViewModels.Abstractions
+namespace Connect4Engine.MVVM.Abstractions
 {
     public abstract class ViewModelBase : ObservableObject, INotifyPropertyChanged
     {

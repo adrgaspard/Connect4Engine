@@ -1,15 +1,9 @@
-﻿using ChessEngine.MVVM.ViewModels.Abstractions;
-using CommunityToolkit.Mvvm.Input;
-using Connect4Engine.Core.Match;
+﻿using CommunityToolkit.Mvvm.Input;
+using Connect4Engine.Core.Operation;
 using Connect4Engine.Core.Utils;
+using Connect4Engine.MVVM.Abstractions;
 using Connect4Engine.MVVM.Models;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Connect4Engine.MVVM
@@ -176,34 +170,20 @@ namespace Connect4Engine.MVVM
 
         private void UpdateGameState()
         {
-            if (Game.IsFinished)
-            {
-                State = Game.Winner switch
+            State = Game.IsFinished
+                ? Game.Winner switch
                 {
                     Colour.Red => GameState.RedWonByPower,
                     Colour.Yellow => GameState.YellowWonByPower,
                     _ => GameState.Draw,
-                };
-            }
-            else if (ResignedColour != Colour.None)
-            {
-                State = ResignedColour == Colour.Red ? GameState.YellowWonByResign : GameState.RedWonByResign;
-            }
-            else
-            {
-                if (Clocks[Colour.Red].RemainingTime == TimeSpan.Zero)
-                {
-                    State = GameState.YellowWonByTimeout;
                 }
-                else if (Clocks[Colour.Yellow].RemainingTime == TimeSpan.Zero)
-                {
-                    State = GameState.RedWonByTimeout;
-                }
-                else
-                {
-                    State = Game.Current == Colour.Red ? GameState.RedTurn : GameState.YellowTurn;
-                }
-            }
+                : ResignedColour != Colour.None
+                    ? ResignedColour == Colour.Red ? GameState.YellowWonByResign : GameState.RedWonByResign
+                    : Clocks[Colour.Red].RemainingTime == TimeSpan.Zero
+                                    ? GameState.YellowWonByTimeout
+                                    : Clocks[Colour.Yellow].RemainingTime == TimeSpan.Zero
+                                        ? GameState.RedWonByTimeout
+                                        : Game.Current == Colour.Red ? GameState.RedTurn : GameState.YellowTurn;
         }
     }
 }

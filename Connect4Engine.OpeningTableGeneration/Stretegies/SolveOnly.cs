@@ -1,12 +1,6 @@
-﻿  using Connect4Engine.Core.Knowledge;
+﻿using Connect4Engine.Core.Knowledge;
 using Connect4Engine.Core.Serialization;
 using Connect4Engine.Core.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Connect4Engine.OpeningTableGeneration.Stretegies
 {
@@ -17,16 +11,16 @@ namespace Connect4Engine.OpeningTableGeneration.Stretegies
             Console.WriteLine($"Starting {nameof(SolveOnly)} strategy!");
             Console.WriteLine("----------------------------------------");
             OpeningTableGenerator generator = new();
-            var results = GenerationResult.Empty;
+            GenerationResult results = GenerationResult.Empty;
             Task generate = Task.Run(() =>
             {
                 results = generator.Generate(positions, Global.ConnectedNeeded, Global.Width, Global.Height, Global.Depth);
             });
             DateTime generateStart = DateTime.Now;
-            while (generate.Status != TaskStatus.RanToCompletion && generate.Status != TaskStatus.Faulted && generate.Status != TaskStatus.Canceled)
+            while (generate.Status is not TaskStatus.RanToCompletion and not TaskStatus.Faulted and not TaskStatus.Canceled)
             {
                 Thread.Sleep(10000);
-                var elapsed = (DateTime.Now - generateStart).ToString(@"hh\:mm\:ss");
+                string elapsed = (DateTime.Now - generateStart).ToString(@"hh\:mm\:ss");
                 switch (generator.CurrentStep)
                 {
                     case GeneratorStep.Initialization:
@@ -52,7 +46,7 @@ namespace Connect4Engine.OpeningTableGeneration.Stretegies
             Console.WriteLine($"[{DateTime.Now - generateStart:hh\\:mm\\:ss}] Generation finished, now it's time to write the results!");
             Console.WriteLine("----------------------------------------");
             Console.WriteLine("Starting writing results...");
-            using (var stream = new StreamWriter($"{Global.ConnectedNeeded}-{Global.Width}-{Global.Height}-{Global.Depth}_{positions.StartingPosition}_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}.{Consts.DataFilesExtension}"))
+            using (StreamWriter stream = new($"{Global.ConnectedNeeded}-{Global.Width}-{Global.Height}-{Global.Depth}_{positions.StartingPosition}_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}.{Consts.DataFilesExtension}"))
             {
                 stream.Write(new GenerationResultSerializer().Serialize(results));
             }

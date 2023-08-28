@@ -1,12 +1,6 @@
 ﻿using Connect4Engine.Core.Knowledge;
+using Connect4Engine.Core.Serialization;
 using Connect4Engine.Core.Utils;
-using Connect4Engine.OpeningTableGeneration.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Connect4Engine.OpeningTableGeneration.Stretegies
 {
@@ -15,7 +9,7 @@ namespace Connect4Engine.OpeningTableGeneration.Stretegies
         public static void Execute(string startingPosition = "")
         {
             OpeningTableExplorator explorator = new();
-            var positions = ExplorationResult.Empty;
+            ExplorationResult positions = ExplorationResult.Empty;
             Console.WriteLine($"Starting {nameof(ExploreOnly)} strategy!");
             Console.WriteLine("----------------------------------------");
             Task explore = Task.Run(() =>
@@ -23,10 +17,10 @@ namespace Connect4Engine.OpeningTableGeneration.Stretegies
                 positions = explorator.Explore(startingPosition, Global.ConnectedNeeded, Global.Width, Global.Height, Global.Depth);
             });
             DateTime exploreStart = DateTime.Now;
-            while (explore.Status != TaskStatus.RanToCompletion && explore.Status != TaskStatus.Faulted && explore.Status != TaskStatus.Canceled)
+            while (explore.Status is not TaskStatus.RanToCompletion and not TaskStatus.Faulted and not TaskStatus.Canceled)
             {
                 Thread.Sleep(10000);
-                var elapsed = (DateTime.Now - exploreStart).ToString(@"hh\:mm\:ss");
+                string elapsed = (DateTime.Now - exploreStart).ToString(@"hh\:mm\:ss");
                 switch (explorator.CurrentStep)
                 {
                     case ExploratorStep.Initialization:
@@ -59,7 +53,7 @@ namespace Connect4Engine.OpeningTableGeneration.Stretegies
             Console.WriteLine($"[{DateTime.Now - exploreStart:hh\\:mm\\:ss}] Exploration finished, now it's time to write the results!");
             Console.WriteLine("----------------------------------------");
             Console.WriteLine("Starting writing results...");
-            using (var stream = new StreamWriter($"{Global.ConnectedNeeded}-{Global.Width}-{Global.Height}-{Global.Depth}_{startingPosition}_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}.{Consts.ExploreFilesExtension}"))
+            using (StreamWriter stream = new($"{Global.ConnectedNeeded}-{Global.Width}-{Global.Height}-{Global.Depth}_{startingPosition}_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}.{Consts.ExploreFilesExtension}"))
             {
                 stream.Write(new ExplorationResultSerializer().Serialize(positions));
             }

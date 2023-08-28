@@ -1,16 +1,10 @@
-﻿using ChessEngine.MVVM.ViewModels.Abstractions;
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using Connect4Engine.Core.AI;
 using Connect4Engine.Core.Knowledge;
-using Connect4Engine.Core.Match;
+using Connect4Engine.Core.Operation;
 using Connect4Engine.Core.Serialization;
-using System;
-using System.Collections.Generic;
+using Connect4Engine.MVVM.Abstractions;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Connect4Engine.MVVM
@@ -93,7 +87,7 @@ namespace Connect4Engine.MVVM
             GameManagerViewModel = gameManagerViewModel;
             Mutex = new();
             Solving = false;
-            using (var stream = new StreamReader($"4-7-6-10__2023-01-05-01-31-09.c4knl"))
+            using (StreamReader stream = new($"4-7-6-10__2023-01-05-01-31-09.c4knl"))
             {
                 OpeningTable = new OpeningTableSerializer().Deserialize(stream.ReadToEnd());
             }
@@ -118,12 +112,12 @@ namespace Connect4Engine.MVVM
             {
                 Game game = GameManagerViewModel.GameViewModel.Game;
                 Solver solver = new(game.ConnectNeeded, game.Width, game.Height, OpeningTable);
-                var scores = solver.Analyze(game.Engine, Weak);
+                MovementDescriptor[] scores = solver.Analyze(game.Engine, Weak);
                 Scores = string.Join(", ", scores.Select(result => result.Possible ? result.Score.ToString() : "--"));
-                var moveClassifications = new ObservableCollection<MoveClassification>();
+                ObservableCollection<MoveClassification> moveClassifications = new();
                 for (int i = 0; i < scores.Length; i++)
                 {
-                    moveClassifications.Add(Analyzer.Analyze(game.Engine, scores, scoresInBytes[i], ScoreHistory[ScoreHistory.Count - 2]));
+                    moveClassifications.Add(Analyzer.Analyze(game.Engine, scores, scores[i].Score, ScoreHistory[^2]));
                 }
                 MoveClassifications = moveClassifications;
                 ExploredNodes = solver.ExploredNodesCount;

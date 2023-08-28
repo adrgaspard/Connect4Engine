@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Collections.Immutable;
-using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Connect4Engine.Core.Knowledge
 {
     public sealed class ExplorationResult : IReadOnlyDictionary<PositionMultiIdentifier, ImmutableSortedSet<UInt128>>
     {
-        public readonly static ExplorationResult Empty = new();
+        public static readonly ExplorationResult Empty = new();
 
         private readonly ImmutableSortedDictionary<PositionMultiIdentifier, ImmutableSortedSet<UInt128>> Data;
 

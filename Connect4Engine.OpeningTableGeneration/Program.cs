@@ -1,9 +1,7 @@
 ﻿using Connect4Engine.Core.Knowledge;
 using Connect4Engine.Core.Serialization;
 using Connect4Engine.Core.Utils;
-using Connect4Engine.OpeningTableGeneration.Serialization;
 using Connect4Engine.OpeningTableGeneration.Stretegies;
-using System.Text;
 
 //ExploreOnly.Execute("");
 
@@ -29,7 +27,7 @@ using System.Text;
 
 GenerationResult results;
 Console.WriteLine("Reading results...");
-using (var stream = new StreamReader($"4-7-6-10__2023-01-04-00-11-09.{Consts.DataFilesExtension}"))
+using (StreamReader stream = new($"4-7-6-10__2023-01-04-00-11-09.{Consts.DataFilesExtension}"))
 {
     results = new GenerationResultSerializer().Deserialize(stream.ReadToEnd());
 }

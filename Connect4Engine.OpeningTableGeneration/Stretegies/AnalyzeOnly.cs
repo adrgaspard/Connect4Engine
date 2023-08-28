@@ -1,10 +1,5 @@
 ﻿using Connect4Engine.Core.Knowledge;
 using Connect4Engine.Core.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Connect4Engine.OpeningTableGeneration.Stretegies
 {
@@ -14,8 +9,8 @@ namespace Connect4Engine.OpeningTableGeneration.Stretegies
         {
             Console.WriteLine($"Starting {nameof(AnalyzeOnly)} strategy!");
             Console.WriteLine("----------------------------------------");
-            var orderedScores = scores.OrderByDescending(pair => pair.Value.ExploredNodes).ToDictionary(pair => pair.Key, pair => pair.Value);
-            var exploredNodeValues = orderedScores.Select(pair => pair.Value.ExploredNodes).ToArray();
+            Dictionary<PositionMultiIdentifier, EvaluationInfo> orderedScores = scores.OrderByDescending(pair => pair.Value.ExploredNodes).ToDictionary(pair => pair.Key, pair => pair.Value);
+            uint[] exploredNodeValues = orderedScores.Select(pair => pair.Value.ExploredNodes).ToArray();
             uint greater1M = 0;
             uint greater2M = 0;
             uint greater4M = 0;

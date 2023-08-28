@@ -1,9 +1,4 @@
-﻿using ChessEngine.MVVM.ViewModels.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Connect4Engine.MVVM.Abstractions;
 using System.Windows.Media;
 
 namespace Connect4Engine.UI.WPF.ViewModels

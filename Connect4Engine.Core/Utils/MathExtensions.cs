@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Connect4Engine.Core.Utils
+﻿namespace Connect4Engine.Core.Utils
 {
     public static class MathExtensions
     {
@@ -53,34 +47,30 @@ namespace Connect4Engine.Core.Utils
 
         public static double Variance<T>(this IEnumerable<T> source, Func<T, double> extractNumber)
         {
-            var sumOfSquared = 0.0;
-            var sum = 0.0;
-            var length = 0;
-            foreach (var variable in source)
+            double sumOfSquared = 0.0;
+            double sum = 0.0;
+            int length = 0;
+            foreach (T? variable in source)
             {
-                var number = extractNumber(variable);
-                sumOfSquared += (number * number);
+                double number = extractNumber(variable);
+                sumOfSquared += number * number;
                 sum += number;
                 length++;
             }
-            if (length <= 1) return 0;
-            return Variance(sumOfSquared, sum, length);
+            return length <= 1 ? 0 : Variance(sumOfSquared, sum, length);
         }
 
         public static double StandardDeviation<T>(this IEnumerable<T> source, Func<T, double> extractNumber)
         {
-            var variance = Variance(source, extractNumber);
-            if (variance <= 1) return 0;
-            return Math.Sqrt(variance);
+            double variance = Variance(source, extractNumber);
+            return variance <= 1 ? 0 : Math.Sqrt(variance);
         }
 
         private static double Variance(double sumOfSquared, double sum, int length)
         {
-            if (length <= 0)
-            {
-                throw new ArgumentException("CalculateVariance cannot accept length equal to or less than one", nameof(length));
-            }
-            return (sumOfSquared - ((sum * sum) / length)) / (length - 1);
+            return length <= 0
+                ? throw new ArgumentException("CalculateVariance cannot accept length equal to or less than one", nameof(length))
+                : (sumOfSquared - (sum * sum / length)) / (length - 1);
         }
 
     }

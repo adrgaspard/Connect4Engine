@@ -1,12 +1,7 @@
-﻿using ChessEngine.MVVM.ViewModels.Abstractions;
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using Connect4Engine.Core.Utils;
-using System;
-using System.Collections.Generic;
+using Connect4Engine.MVVM.Abstractions;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Connect4Engine.MVVM

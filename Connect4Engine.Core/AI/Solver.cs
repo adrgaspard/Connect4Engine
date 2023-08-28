@@ -1,13 +1,6 @@
 ﻿using Connect4Engine.Core.Abstractions;
-using Connect4Engine.Core.AI;
 using Connect4Engine.Core.Knowledge;
-using Connect4Engine.Core.Match;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using Connect4Engine.Core.Operation;
 
 namespace Connect4Engine.Core.AI
 {
@@ -34,13 +27,13 @@ namespace Connect4Engine.Core.AI
             ConnectNeeded = connectNeeded;
             Width = width;
             Height = height;
-            MinScore = -(Width * Height) / 2 + 3;
-            MaxScore = (Width * Height + 1) / 2 - 3;
+            MinScore = (-(Width * Height) / 2) + 3;
+            MaxScore = (((Width * Height) + 1) / 2) - 3;
             Table = new(transpositionTableLogSize);
             ColumnOrder = new byte[width];
             for (int i = 0; i < width; i++)
             {
-                ColumnOrder[i] = (byte)(width / 2 + (1 - 2 * (i % 2)) * (i + 1) / 2);
+                ColumnOrder[i] = (byte)((width / 2) + ((1 - (2 * (i % 2))) * (i + 1) / 2));
             }
             Mutex = new();
             OpeningTable = openingTable;
@@ -82,10 +75,13 @@ namespace Connect4Engine.Core.AI
                     }
                     else
                     {
-                        scores[index] = new (false, 0);
+                        scores[index] = new(false, 0);
                     }
                 });
-                while (tasksLaunched <= columnIndex);
+                while (tasksLaunched <= columnIndex)
+                {
+                    ;
+                }
             }
             Task.WaitAll(tasks);
             return scores;
@@ -97,11 +93,11 @@ namespace Connect4Engine.Core.AI
             {
                 return (game.RemainingMoves + 1) / 2;
             }
-            int min = weak ? -1 : -(game.RemainingMoves) / 2;
+            int min = weak ? -1 : -game.RemainingMoves / 2;
             int max = weak ? 1 : (game.RemainingMoves + 1) / 2;
             while (min < max) // Iteratively narrow the min-max exploration window.
             {
-                int median = min + (max - min) / 2;
+                int median = min + ((max - min) / 2);
                 if (median <= 0 && min / 2 < median)
                 {
                     median = min / 2;
@@ -169,7 +165,7 @@ namespace Connect4Engine.Core.AI
             {
                 if (transpositionValue > MaxScore - MinScore + 1)
                 {  // Lower bound.
-                    min = transpositionValue + 2 * MinScore - MaxScore - 2;
+                    min = transpositionValue + (2 * MinScore) - MaxScore - 2;
                     if (alpha < min)
                     {
                         alpha = min; // No need to keep alpha below the maximum possible score.
@@ -192,7 +188,7 @@ namespace Connect4Engine.Core.AI
                     }
                 }
             }
-            var openingResult = OpeningTable[key];
+            TableResult<sbyte> openingResult = OpeningTable[key];
             if (openingResult.Found)
             {
                 return openingResult;
@@ -215,7 +211,7 @@ namespace Connect4Engine.Core.AI
                 {
                     lock (Mutex)
                     {
-                        Table.Put(key, (byte)(score + MaxScore - 2 * MinScore + 2)); // Save the lower bound of the position.
+                        Table.Put(key, (byte)(score + MaxScore - (2 * MinScore) + 2)); // Save the lower bound of the position.
                     }
                     game.Undo();
                     return score; // Prune if a better possible move is found.

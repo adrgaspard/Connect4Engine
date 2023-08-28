@@ -1,15 +1,10 @@
-﻿using ChessEngine.MVVM.ViewModels.Abstractions;
-using Connect4Engine.Core.Match;
+﻿using Connect4Engine.Core.Operation;
 using Connect4Engine.MVVM;
+using Connect4Engine.MVVM.Abstractions;
 using Connect4Engine.MVVM.Models;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Documents;
 
 namespace Connect4Engine.UI.WPF.ViewModels
 {

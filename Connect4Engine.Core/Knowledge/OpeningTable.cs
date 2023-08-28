@@ -1,11 +1,6 @@
 ﻿using Connect4Engine.Core.Abstractions;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Connect4Engine.Core.Knowledge
 {

@@ -1,12 +1,7 @@
 ﻿using Connect4Engine.Core.Utils;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Connect4Engine.Core.Match
+namespace Connect4Engine.Core.Operation
 {
     public class GameEngine : ICloneable
     {
@@ -68,8 +63,8 @@ namespace Connect4Engine.Core.Match
             PlaysHistory = new(Width * Height);
         }
 
-        private GameEngine(Stack<UInt128> playsHistory, int connectNeeded, int width, int height, UInt128 bottomMask, UInt128 boardMask, List<UInt128> topColumnMasks, 
-            List<UInt128> bottomColumnMasks, List<UInt128> columnMasks, IReadOnlyList<UInt128> readOnlyColumnMasks, UInt128 currentPawns, 
+        private GameEngine(Stack<UInt128> playsHistory, int connectNeeded, int width, int height, UInt128 bottomMask, UInt128 boardMask, List<UInt128> topColumnMasks,
+            List<UInt128> bottomColumnMasks, List<UInt128> columnMasks, IReadOnlyList<UInt128> readOnlyColumnMasks, UInt128 currentPawns,
             UInt128 allPawns, int remainingMoves)
         {
             PlaysHistory = new(playsHistory.Reverse());
@@ -100,7 +95,7 @@ namespace Connect4Engine.Core.Match
 
         public void Play(byte columnIndex)
         {
-            Play(AllPawns + BottomColumnMasks[columnIndex] & ColumnMasks[columnIndex]);
+            Play((AllPawns + BottomColumnMasks[columnIndex]) & ColumnMasks[columnIndex]);
         }
 
         public void Undo()
@@ -212,26 +207,26 @@ namespace Connect4Engine.Core.Match
             // Vertical checking.
             UInt128 r = (position << 1) & (position << 2) & (position << 3);
             // Horizontal checking.
-            UInt128 p = (position << (Height + 1)) & (position << 2 * (Height + 1));
-            r |= p & (position << 3 * (Height + 1));
+            UInt128 p = (position << (Height + 1)) & (position << (2 * (Height + 1)));
+            r |= p & (position << (3 * (Height + 1)));
             r |= p & (position >> (Height + 1));
-            p = (position >> (Height + 1)) & (position >> 2 * (Height + 1));
+            p = (position >> (Height + 1)) & (position >> (2 * (Height + 1)));
             r |= p & (position << (Height + 1));
-            r |= p & (position >> 3 * (Height + 1));
+            r |= p & (position >> (3 * (Height + 1)));
             // Diagonal 1 checking.
-            p = (position << Height) & (position << 2 * Height);
-            r |= p & (position << 3 * Height);
+            p = (position << Height) & (position << (2 * Height));
+            r |= p & (position << (3 * Height));
             r |= p & (position >> Height);
-            p = (position >> Height) & (position >> 2 * Height);
+            p = (position >> Height) & (position >> (2 * Height));
             r |= p & (position << Height);
-            r |= p & (position >> 3 * Height);
+            r |= p & (position >> (3 * Height));
             // Diagonal 2 checking.
-            p = (position << (Height + 2)) & (position << 2 * (Height + 2));
-            r |= p & (position << 3 * (Height + 2));
+            p = (position << (Height + 2)) & (position << (2 * (Height + 2)));
+            r |= p & (position << (3 * (Height + 2)));
             r |= p & (position >> (Height + 2));
-            p = (position >> (Height + 2)) & (position >> 2 * (Height + 2));
+            p = (position >> (Height + 2)) & (position >> (2 * (Height + 2)));
             r |= p & (position << (Height + 2));
-            r |= p & (position >> 3 * (Height + 2));
+            r |= p & (position >> (3 * (Height + 2)));
             // Returning bitmap of all spots for a winning position.
             return r & (BoardMask ^ mask);
         }
@@ -248,7 +243,7 @@ namespace Connect4Engine.Core.Match
 
         private UInt128 GetBottomMask(int width, int height)
         {
-            return width == 0 ? 0 : GetBottomMask(width - 1, height) | UInt128.One << (width - 1) * (height + 1);
+            return width == 0 ? 0 : GetBottomMask(width - 1, height) | (UInt128.One << ((width - 1) * (height + 1)));
         }
 
         private List<UInt128> GetOrInitializeTopMasks()
@@ -278,7 +273,7 @@ namespace Connect4Engine.Core.Match
                 UInt128 columnMask = 0;
                 for (int rowIndex = startingRow; rowIndex <= endingRow; rowIndex++)
                 {
-                    columnMask |= UInt128.One << rowIndex + columnIndex * (Height + 1);
+                    columnMask |= UInt128.One << (rowIndex + (columnIndex * (Height + 1)));
                 }
                 result.Add(columnMask);
             }

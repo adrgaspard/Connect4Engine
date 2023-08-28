@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Connect4Engine.UI.WPF
 {
@@ -13,7 +9,7 @@ namespace Connect4Engine.UI.WPF
         {
             App application = new();
             application.InitializeComponent();
-            application.Run();
+            _ = application.Run();
         }
     }
 }

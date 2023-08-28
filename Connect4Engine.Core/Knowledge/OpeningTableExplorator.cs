@@ -1,14 +1,6 @@
-﻿using Connect4Engine.Core.AI;
-using Connect4Engine.Core.Match;
+﻿using Connect4Engine.Core.Operation;
 using Connect4Engine.Core.Serialization;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Connect4Engine.Core.Knowledge
 {
@@ -65,7 +57,7 @@ namespace Connect4Engine.Core.Knowledge
                 throw new ArgumentOutOfRangeException(nameof(depth), "The depth must be a positive number lower than the number of squares.");
             }
             GameEngine game = new(connectNeeded, width, height);
-            foreach (var columnIndex in startingPosition.Select(c => Converter.ConvertBack(c)))
+            foreach (byte columnIndex in startingPosition.Select(Converter.ConvertBack))
             {
                 game.Play(columnIndex);
             }
@@ -83,7 +75,7 @@ namespace Connect4Engine.Core.Knowledge
             positionKeys = null;
             GC.Collect(2);
             CurrentStep = ExploratorStep.OptimizingFetchedPositions;
-            var optimizedPositions = positions.GroupBy(tuple => tuple.Item3).ToImmutableSortedDictionary(grouping => new PositionMultiIdentifier(
+            ImmutableSortedDictionary<PositionMultiIdentifier, ImmutableSortedSet<UInt128>> optimizedPositions = positions.GroupBy(tuple => tuple.Item3).ToImmutableSortedDictionary(grouping => new PositionMultiIdentifier(
                 grouping.Key, grouping.First().Item1), grouping => grouping.Select(item => item.Item2).ToImmutableSortedSet());
             OptimizedFetchedPositions = optimizedPositions.Count;
             CurrentStep = ExploratorStep.End;

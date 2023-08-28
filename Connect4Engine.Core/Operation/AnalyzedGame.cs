@@ -1,11 +1,5 @@
 ﻿using Connect4Engine.Core.AI;
 using Connect4Engine.Core.Knowledge;
-using Connect4Engine.Core.Match;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Connect4Engine.Core.Operation
 {
@@ -25,7 +19,7 @@ namespace Connect4Engine.Core.Operation
             Analyzer = new();
             PlaysEvaluations = new(width * height);
             UndosEvaluations = new(width * height);
-            Scores = new(width * height + 2) { -1, 1 };
+            Scores = new((width * height) + 2) { -1, 1 };
             PlaysEvaluations.Push(Solver.Analyze(Engine, false));
             LastMoveClassification = MoveClassification.None;
         }
@@ -60,8 +54,8 @@ namespace Connect4Engine.Core.Operation
 
         private void UpdateLastMoveClassification()
         {
-            var possibles = PlaysEvaluations.Peek().Where(move => move.Possible);
-            LastMoveClassification = Analyzer.Analyze(Engine, PlaysEvaluations.Peek(), PlaysEvaluations.Peek()[PlaysHistory.Peek()].Score, Scores[Scores.Count - 3]);
+            IEnumerable<MovementDescriptor> possibles = PlaysEvaluations.Peek().Where(move => move.Possible);
+            LastMoveClassification = Analyzer.Analyze(Engine, PlaysEvaluations.Peek(), PlaysEvaluations.Peek()[PlaysHistory.Peek()].Score, Scores[^3]);
         }
 
     }
